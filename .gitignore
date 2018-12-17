@@ -1,0 +1,5 @@
+*.sw*
+userData/*
+internsRepos/*
+.report
+internURL.txt
