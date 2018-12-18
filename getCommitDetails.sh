@@ -6,11 +6,10 @@ for i in $url; do
   cd internsRepos
   userName=`echo $i | cut -d'/' -f5`
   if [ ! -d ${userName} ]; then
-    echo "rahul"
-    git clone $i 1>/dev/null
+    git clone $i 1>/dev/null 2>/dev/null
   else
     cd $userName
-    git pull 1>/dev/null
+    git pull 1>/dev/null 2>/dev/null
     cd ..
   fi
   cd ..
