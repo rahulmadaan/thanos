@@ -24,25 +24,29 @@ const printHead = function () {
   console.log();
   console.log(underLine());
   let head  = '|';
-  head = head +justify("Serial Number",20) + '|';
-  head = head + justify("User Name",35) + '|';
-  head = head + justify("Total Commits",20) + '|';
-  head = head + justify("Last Commit Data",35) + '|';
+  head = head +justify("S.No.",10) + '|';
+  head = head + justify("User Name",30) + '|';
+  head = head + justify("Total Commits",15) + '|';
+  head = head + justify("Last Commit",25) + '|';
+  head = head + justify("Pass %",15) + '|';
+  head = head + justify("Pending Tests",15) + '|';
   console.log(head); 
   console.log(underLine());
 }
 
 const underLine = function () {
-  return repeat('-',115);
+  return repeat('-',117);
 }
 
-const testLog = function (userName, totalCommits, lastCommit) {
+const testLog = function (userName, totalCommits, lastCommit,passingAndTotalTests,pending) {
   let log = '|';
   serialNumber++;
-  log = log + justify(serialNumber.toString(),20) + '|' ;
-  log = log + justify(userName.toString(),35) + '|';
-  log = log + justify(totalCommits.toString(),20) + '|';
-  log = log + justify(lastCommit.toString(),35) + '|';
+  log = log + justify(serialNumber.toString(),10) + '|' ;
+  log = log + justify(userName.toString(),30) + '|';
+  log = log + justify(totalCommits.toString(),15) + '|';
+  log = log + justify(lastCommit.toString(),25) + '|';
+  log = log + justify(passingAndTotalTests.toString(),15) + '|';
+  log = log + justify(pending.toString(),15) + '|';
   console.log(log);
   console.log(underLine());
 }
