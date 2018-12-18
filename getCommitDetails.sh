@@ -1,10 +1,16 @@
 #! /bin/bash
 
 url=`cat internURL.txt`
-rm .report
+length=`cat internURL.txt | wc -l`
+count=1
 for i in $url; do 
   cd internsRepos
   userName=`echo $i | cut -d'/' -f5`
+  percentage=$(echo 'scale=2;'"$count * 100 / $length"|bc)
+  echo -ne '\0015'
+  echo -ne `node ../progressBar.js $length $count` $percentage
+  count=$((count+1))
+  
   if [ ! -d ${userName} ]; then
     git clone $i 1>/dev/null 2>/dev/null
   else
@@ -17,6 +23,7 @@ done;
 userNames=`ls ./internsRepos | grep 'head'`
 rm -rf userData
 mkdir userData
+rm .report
 for userName in $userNames; do
   cd ./internsRepos/$userName
   git log >> ../../userData/$userName
