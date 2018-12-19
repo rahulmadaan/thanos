@@ -30,15 +30,16 @@ const printHead = function () {
   head = head + justify("Last Commit",25) + '|';
   head = head + justify("Pass %",15) + '|';
   head = head + justify("Pending Tests",15) + '|';
+  head = head + justify("Coverage",10) + '|';
   console.log(head); 
   console.log(underLine());
 }
 
 const underLine = function () {
-  return repeat('-',117);
+  return repeat('-',128);
 }
 
-const testLog = function (userName, totalCommits, lastCommit,passingAndTotalTests,pending) {
+const testLog = function (userName, totalCommits, lastCommit,passingAndTotalTests,pending,coverage) {
   let log = '|';
   serialNumber++;
   log = log + justify(serialNumber.toString(),10) + '|' ;
@@ -47,6 +48,7 @@ const testLog = function (userName, totalCommits, lastCommit,passingAndTotalTest
   log = log + justify(lastCommit.toString(),25) + '|';
   log = log + justify(passingAndTotalTests.toString(),15) + '|';
   log = log + justify(pending.toString(),15) + '|';
+  log = log + justify(coverage.toString(),10) + '|';
   console.log(log);
   console.log(underLine());
 }
