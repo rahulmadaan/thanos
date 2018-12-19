@@ -20,14 +20,14 @@ for i in $url; do
   fi
   cd ..
 done;
-userNames=`ls ./internsRepos | grep 'head'`
+userNames=`ls ./internsRepos`
 rm -rf userData
 mkdir userData
 rm .report
 for userName in $userNames; do
   cd ./internsRepos/$userName
   git log >> ../../userData/$userName
-  echo `mocha --recursive --reporter xunit | head -1| cut -d" " -f4,5,7` > ../../.tmp 
+  echo `mocha --recursive --reporter xunit 2>/dev/null | head -1| cut -d" " -f4,5,7` 1> ../../.tmp
   pendingTests=`cat ../../.tmp | grep -o "skipped.*$" | grep -o '\d\+'`
   totalTests=`cat ../../.tmp | grep -o '.*failures' | grep -o '\d\+'`
   failingTests=`cat ../../.tmp | grep -o 'failures.*skipped' | grep -o '\d\+'`
