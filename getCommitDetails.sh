@@ -27,18 +27,20 @@ rm .report
 for userName in $userNames; do
   cd ./internsRepos/$userName
   git log >> ../../userData/$userName
-  echo `mocha --recursive --reporter xunit 2>/dev/null | head -1| cut -d" " -f4,5,7` 1> ../../.tmp
+  echo `nyc -r json-summary mocha --recursive --reporter xunit 2>/dev/null | head -1| cut -d" " -f4,5,7` 1> ../../.tmp
   pendingTests=`cat ../../.tmp | grep -o "skipped.*$" | grep -o '\d\+'`
   totalTests=`cat ../../.tmp | grep -o '.*failures' | grep -o '\d\+'`
   failingTests=`cat ../../.tmp | grep -o 'failures.*skipped' | grep -o '\d\+'`
   passingTests=$((totalTests - failingTests - pendingTests))
+  coveragePercentage=`cat coverage/coverage-summary.json | jq '.total.lines.pct'`
   cd ../..
   totalCommits=`grep '^commit' ./userData/$userName | wc -l`
   lastCommit=`grep 'Date' ./userData/$userName | head -1 | cut -d' ' -f4,5,6,7 | sed "s/Date://g"` 
-  echo $userName"|" $totalCommits"|"$lastCommit"|"$passingTests/$totalTests "|" $pendingTests >> ./.report
+  echo $userName"|" $totalCommits"|"$lastCommit"|"$passingTests/$totalTests "|" $pendingTests "|" $coveragePercentage >> ./.report
 done;
 
 cat ./.report | sort -t'|' -k2nr> ./.tmp
 cat ./.tmp > ./.report
+rm -rf coverage
 #rm .tmp
 node generateReport.js
