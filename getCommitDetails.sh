@@ -31,7 +31,7 @@ echo ''
 echo 'generating report....'
 for userName in $userNames; do
   cd ./internsRepos/$userName
-  git log >> ../../userData/$userName
+  git log --shortstat>> ../../userData/$userName
   echo `nyc -r json-summary mocha --recursive --reporter xunit 2>/dev/null | head -1| cut -d" " -f4,5,7` 1> ../../.tmp
   percentage=$(echo 'scale=2;'"$count * 100 / $length"|bc)
   echo -ne '\0015'
@@ -46,19 +46,25 @@ for userName in $userNames; do
   totalCommits=`grep '^commit' ./userData/$userName | wc -l`
   lastCommit=`grep 'Date' ./userData/$userName | head -1 | cut -d' ' -f4,5,6,7 | sed "s/Date://g"` 
   
+  totalInsertions=`grep -o 'changed.*.insertions' ./userData/$userName | grep -o '\d\+' | awk '{sum+=$1} END {print sum}'`
+  totalDeletions=`grep -o '),.*.deletions' ./userData/$userName | grep -o '\d\+'  | awk '{sum+=$1} END {print sum}'`
+  totalChanges=$((totalInsertions + totalDeletions))
+  changesPerCommit=$((totalChanges / totalCommits))
+
   echo "<td>"$pendingTests"</td>" > pending
   echo "<td>"$passingTests"/"$totalTests"</td>" > passing
   echo "<tr><td>"$userName"</td>" > user
-  echo "<td>"$coveragePercentage"</td></tr>" > coverage
+  echo "<td>"$coveragePercentage"</td>" > coverage
   echo "<td>"$totalCommits"</td>" > total
   echo "<td>"$lastCommit"</td>" > last
-  cat user total last passing pending coverage >> report.html
-  echo $userName"|" $totalCommits"|"$lastCommit"|"$passingTests/$totalTests "|" $pendingTests "|" $coveragePercentage >> ./.report
+  echo "<td>"$changesPerCommit"</td>" "</tr>" > changes
+  cat user total last passing pending coverage  changes>> report.html
+  echo $userName"|" $totalCommits"|"$lastCommit"|"$passingTests/$totalTests "|" $pendingTests "|" $coveragePercentage "|" $changesPerCommit>> ./.report
 done; 
 cat ./.report | sort -t'|' -k2nr> ./.tmp
 cat ./.tmp > ./.report
 rm -rf coverage
 rm -rf .nyc_output
 cat footer >> report.html
-rm user total last passing pending coverage
+rm user total last passing pending coverage changes
 ./upload.sh

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <style>
+    table{
+      border-collapse: collapse;
+    }
+    td, th{
+      border: 1px solid black;
+      text-align: center
+    }
+  </style>
+  <head>
+    <title>Thanos Reports</title>
+  </head>
+  <body>
+    <table style="width: 75%; margin-left: 12.5%; margin-right:12.5%; border: 2px solid black">
+    <tr>
+      <th>User Name</th>
+      <th>total commits</th>
+      <th>last commit</th>
+      <th>tests passing</th>
+      <th>pending tests</th>
+      <th>coverage</th>
+      <th>Avg. Changes/Commit</th>
+    </tr>
