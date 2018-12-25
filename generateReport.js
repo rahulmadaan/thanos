@@ -55,5 +55,9 @@ const generateReport = function (userName, totalCommits, lastCommit,passingAndTo
   console.log(log);
   console.log(chalk.blue(generateLine()));
 }
+
+// const dummy = function(){
+//  return 'ankon';
+// }
 printHead();
 box.map(x=>generateReport.apply(null,x));
