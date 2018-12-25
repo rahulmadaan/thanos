@@ -54,11 +54,11 @@ for userName in $userNames; do
   echo "<td>"$pendingTests"</td>" > pending
   echo "<td>"$passingTests"/"$totalTests"</td>" > passing
   echo "<tr><td>"$userName"</td>" > user
-  echo "<td>"$coveragePercentage"</td>" > coverage
+  echo "<td>"$coveragePercentage"</td>" > coverage%
   echo "<td>"$totalCommits"</td>" > total
   echo "<td>"$lastCommit"</td>" > last
   echo "<td>"$changesPerCommit"</td>" "</tr>" > changes
-  cat user total last passing pending coverage  changes>> report.html
+  cat user total last passing pending coverage% changes>> report.html
   echo $userName"|" $totalCommits"|"$lastCommit"|"$passingTests/$totalTests "|" $pendingTests "|" $coveragePercentage "|" $changesPerCommit>> ./.report
 done; 
 cat ./.report | sort -t'|' -k2nr> ./.tmp
@@ -66,5 +66,5 @@ cat ./.tmp > ./.report
 rm -rf coverage
 rm -rf .nyc_output
 cat footer >> report.html
-rm user total last passing pending coverage changes
+rm user total last passing pending coverage% changes
 ./upload.sh
