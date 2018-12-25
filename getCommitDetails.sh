@@ -26,6 +26,7 @@ rm -rf userData
 mkdir userData
 rm .report
 count=1
+cat header > report.html
 echo ''
 echo 'generating report....'
 for userName in $userNames; do
@@ -44,12 +45,20 @@ for userName in $userNames; do
   cd ../..
   totalCommits=`grep '^commit' ./userData/$userName | wc -l`
   lastCommit=`grep 'Date' ./userData/$userName | head -1 | cut -d' ' -f4,5,6,7 | sed "s/Date://g"` 
+  
+  echo "<td>"$pendingTests"</td>" > pending
+  echo "<td>"$passingTests"/"$totalTests"</td>" > passing
+  echo "<tr><td>"$userName"</td>" > user
+  echo "<td>"$coveragePercentage"</td></tr>" > coverage
+  echo "<td>"$totalCommits"</td>" > total
+  echo "<td>"$lastCommit"</td>" > last
+  cat user total last passing pending coverage >> report.html
   echo $userName"|" $totalCommits"|"$lastCommit"|"$passingTests/$totalTests "|" $pendingTests "|" $coveragePercentage >> ./.report
-done;
-
+done; 
 cat ./.report | sort -t'|' -k2nr> ./.tmp
 cat ./.tmp > ./.report
 rm -rf coverage
 rm -rf .nyc_output
-#rm .tmp
-node generateReport.js
+cat footer >> report.html
+rm user total last passing pending coverage
+./upload.sh
