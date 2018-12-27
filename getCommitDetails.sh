@@ -31,7 +31,7 @@ echo ''
 echo 'generating report....'
 for userName in $userNames; do
   cd ./internsRepos/$userName
-  git log --shortstat>> ../../userData/$userName
+  git log --shortstat --date=relative >> ../../userData/$userName
   echo `nyc -r json-summary mocha --recursive --reporter xunit 2>/dev/null | head -1| cut -d" " -f4,5,7` 1> ../../.tmp
   percentage=$(echo 'scale=2;'"$count * 100 / $length"|bc)
   echo -ne '\0015'
@@ -42,6 +42,7 @@ for userName in $userNames; do
   failingTests=`cat ../../.tmp | grep -o 'failures.*skipped' | grep -o '\d\+'`
   passingTests=$((totalTests - failingTests - pendingTests))
   coveragePercentage=`cat coverage/coverage-summary.json | jq '.total.lines.pct'`
+  sha=`git log --oneline | cut -d' ' -f1 | head -1`
   cd ../..
   totalCommits=`grep '^commit' ./userData/$userName | wc -l`
   lastCommit=`grep 'Date' ./userData/$userName | head -1 | cut -d' ' -f4,5,6,7 | sed "s/Date://g"` 
@@ -51,20 +52,22 @@ for userName in $userNames; do
   totalChanges=$((totalInsertions + totalDeletions))
   changesPerCommit=$((totalChanges / totalCommits))
 
+  user=`echo $userName | cut -d'-' -f2-`
   echo "<td>"$pendingTests"</td>" > pending
   echo "<td>"$passingTests"/"$totalTests"</td>" > passing
-  echo "<tr><td>"$userName"</td>" > user
-  echo "<td>"$coveragePercentage"</td>" > coverage
+  echo "<tr><td><a href='https://github.com/STEP-tw/$userName'>"$user"</a></td>" > user
+  echo "<td>"$coveragePercentage"</td>" > coverage%
   echo "<td>"$totalCommits"</td>" > total
   echo "<td>"$lastCommit"</td>" > last
+  echo "<td><a href='https://github.com/STEP-tw/$userName/commit/$sha'>"$sha"</a></td>" > sha
   echo "<td>"$changesPerCommit"</td>" "</tr>" > changes
-  cat user total last passing pending coverage  changes>> report.html
-  echo $userName"|" $totalCommits"|"$lastCommit"|"$passingTests/$totalTests "|" $pendingTests "|" $coveragePercentage "|" $changesPerCommit>> ./.report
+  cat user total last sha passing pending coverage% changes>> report.html
+  echo $userName"|" $totalCommits"|"$lastCommit"|"$passingTests/$totalTests "|" $pendingTests "|" $coveragePercentage "|" $changesPerCommit "|" $sha>> ./.report
 done; 
 cat ./.report | sort -t'|' -k2nr> ./.tmp
 cat ./.tmp > ./.report
 rm -rf coverage
 rm -rf .nyc_output
 cat footer >> report.html
-rm user total last passing pending coverage changes
+rm user total last passing pending coverage% changes
 ./upload.sh

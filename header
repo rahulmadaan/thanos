@@ -18,8 +18,9 @@
       <th>User Name</th>
       <th>total commits</th>
       <th>last commit</th>
+      <th>SHA</th>
       <th>tests passing</th>
       <th>pending tests</th>
       <th>coverage</th>
-      <th>Avg. Changes/Commit</th>
+      <th>Chngs/Commit</th>
     </tr>
