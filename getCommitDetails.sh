@@ -56,18 +56,29 @@ for userName in $userNames; do
   echo "<td>"$pendingTests"</td>" > pending
   echo "<td>"$passingTests"/"$totalTests"</td>" > passing
   echo "<tr><td><a href='https://github.com/STEP-tw/$userName'>"$user"</a></td>" > user
-  echo "<td>"$coveragePercentage"</td>" > coverage%
+if [ $coveragePercentage != 100 ]; then
+  echo "<td><font color = 'red'>"$coveragePercentage"</font></td>" > coverage%
+else
+echo "<td>"$coveragePercentage"</td>" > coverage%
+fi
   echo "<td>"$totalCommits"</td>" > total
+  
   echo "<td>"$lastCommit"</td>" > last
   echo "<td><a href='https://github.com/STEP-tw/$userName/commit/$sha'>"$sha"</a></td>" > sha
   echo "<td>"$changesPerCommit"</td>" "</tr>" > changes
+  
   cat user total last sha passing pending coverage% changes>> report.html
   echo $userName"|" $totalCommits"|"$lastCommit"|"$passingTests/$totalTests "|" $pendingTests "|" $coveragePercentage "|" $changesPerCommit "|" $sha>> ./.report
+
 done; 
+updateTime=`date '+%D %X'`
+echo  "</table>" >> report.html      # to put last modified time after the table
+echo "<marquee> This report was last modified at: "$updateTime"</marquee>" >> report.html
+
 cat ./.report | sort -t'|' -k2nr> ./.tmp
 cat ./.tmp > ./.report
 rm -rf coverage
 rm -rf .nyc_output
 cat footer >> report.html
-rm user total last passing pending coverage% changes
+rm user total last passing pending coverage% changes sha
 ./upload.sh

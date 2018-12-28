@@ -18,6 +18,7 @@
   "homepage": "https://github.com/rahulmadaan/thanos#readme",
   "dependencies": {
     "chalk": "^2.4.1",
+    "cli-table": "^0.3.1",
     "jq": "^1.7.2",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0"
